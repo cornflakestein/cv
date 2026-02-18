@@ -1,9 +1,26 @@
 #let data = yaml("./data.yaml")
 
-#show heading: set block(below: 1em, above: 2em)
+#set page(
+  paper: "a4",
+  margin: 2cm
+)
+
+#set text(
+  font: "Merriweather 24pt",
+  size: 9pt
+)
+
+#show title: set text(size: 27pt)
+#show heading: set block(below: 1em, above: 1em)
+#show heading: set text(
+  font: "Open Sans", 
+  size: 9pt,
+  weight: "bold",
+  fill: rgb("2079c7")
+)
 
 #box(
-  height: 1.5cm,
+  height: 3.5cm,
 
   align(
     bottom,
@@ -15,7 +32,7 @@
       grid(
         columns: 1,
         row-gutter: 1em,
-        data.info.name,
+        title[#data.info.name],
         data.info.resume,
       ),
       
@@ -31,61 +48,81 @@
   )
 )
 
-#stack(
-  dir: ttb,
+#grid(
+  columns: (5fr, 1.5fr),
+  column-gutter: 1fr,
 
-  [= Образование],
+  stack(
+    dir: ttb,
+    spacing: 1.5em,
 
-  grid(
-  ..data
-    .education
-    .map(
-      entry => (
-        entry.period,
-        [#entry.title, #entry.uni],
+    grid(
+      columns: 1fr,
+      row-gutter: 2em,
+
+      [= ОБРАЗОВАНИЕ],
+
+      grid(
+        columns: (2fr, 5fr),
+        row-gutter: 1em,
+        ..data
+          .education
+          .map(
+            entry => (
+              entry.period,
+              [*#entry.title*, #entry.uni],
+            ),
+          )
+          .flatten()
       ),
+    ),
+
+    grid(
+      columns: 1fr,
+      row-gutter: 2em,
+
+      [= ОПЫТ РАБОТЫ],
+
+      grid(
+        columns: (2fr, 5fr),
+        row-gutter: 1em,
+        ..data
+          .experience
+          .map(
+            entry => (
+              entry.period,
+              [
+                *#entry.title*, #entry.employer,
+
+                #entry.description
+              ],
+            ),
+          )
+          .flatten()
+      )
     )
-    .flatten()
   ),
 
-  [= Опыт работы],
+  stack(
+    dir: ttb,
+    spacing: 1.5em,
 
-  grid(
-    columns: (10em, 20em),
-    row-gutter: 1em,
-    ..data
-      .experience
-      .map(
-        entry => (
-          entry.period,
-          [
-            #entry.title, #entry.employer,
+    [= НАВЫКИ],
 
-            #entry.description
-          ],
-        ),
-      )
-      .flatten()
+    grid(
+      columns: 1fr,
+      row-gutter: 1em,
+      ..data
+        .skills
+    ),
+
+    [= ЯЗЫКИ],
+
+    grid(
+      columns: 1fr,
+      row-gutter: 1em,
+      ..data
+        .languages
+    )
   )
-)
-
-= Навыки
-
-#grid(
-  row-gutter: 1em,
-  ..data
-    .skills
-)
-
-= Языки
-
-#grid(
-  row-gutter: 1em,
-  ..data
-    .languages
-)
-
-#set grid(
-  columns: (1fr, 5fr),
-  row-gutter: 1em,
 )
